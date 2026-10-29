@@ -5,11 +5,14 @@ The project intentionally needs some release-readiness improvements.
 """
 
 from tabulate import tabulate
+import json
 
-DATA_FILE = "tickets.txt"
-REPORT_TITLE = "Support Ticket Summary"
-HIGH_PRIORITY_THRESHOLD = 4
+CONFIG_FILE = "config.json"
 
+def load_config(filename):
+    """Load project configuration from a JSON file."""
+    with open(filename, encoding="utf-8") as file:
+        return json.load(file)
 
 def load_tickets(filename):
     """Load support tickets from a pipe-delimited text file."""
@@ -86,7 +89,12 @@ def display_tickets(tickets):
 
 def main():
     """Run the support-ticket report."""
-    tickets = load_tickets(DATA_FILE)
+    config = load_config(CONFIG_FILE)
+    DATA_FILE = config["data_file"]
+    REPORT_TITLE = config["report_title"]
+    HIGH_PRIORITY_THRESHOLD = config["high_priority_threshold"]
+
+    tickets = load_tickets(config["data_file"])
     summary = build_summary(tickets, HIGH_PRIORITY_THRESHOLD)
 
     print(REPORT_TITLE)
